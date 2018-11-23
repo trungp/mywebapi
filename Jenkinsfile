@@ -24,6 +24,6 @@ node {
             secretNamespace: 'jieshe', 
             sharedSpaceName: 'default', 
             spaceName: 'jieshe',
-            dockerCredentials: [[credentialsId: 'dockerhub']]
+            dockerCredentials: [[credentialsId: 'acr']]
     }
 }
