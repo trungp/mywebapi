@@ -24,6 +24,6 @@ node {
             secretNamespace: 'jieshe', 
             sharedSpaceName: 'default', 
             spaceName: 'jieshe',
-            dockerCredentials: [[credentialsId: 'acr']]
+            dockerCredentials: [[credentialsId: 'acr', url: 'https://jiesheacr.azurecr.io']]
     }
 }
