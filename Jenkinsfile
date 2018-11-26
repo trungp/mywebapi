@@ -4,26 +4,26 @@ node {
     }
 
     stage('build') {
-        acrQuickTask azureCredentialsId: '438bf5b7-50d9-413d-876f-1f2ad7b1c650', 
-            imageNames: [[image: 'mywebapi:latest']], 
-            registryName: 'jiesheacr', 
-            resourceGroupName: 'jiesheacr', 
+        acrQuickTask azureCredentialsId: env.AZURE_CRED_ID, 
+            imageNames: [[image: '$env.ACR_REGISTRY/$env.IMAGE_NAME:$env.BUILD_NUMBER']], 
+            registryName: env.ACR_NAME, 
+            resourceGroupName: env.ACR_RES_GROUP, 
             dockerfile: 'Dockerfile.develop'
     }
 
     stage('deploy') {
-        devSpaces aksName: 'jiesheaks', 
-            azureCredentialsId: '438bf5b7-50d9-413d-876f-1f2ad7b1c650', 
+        devSpaces aksName: env.AKS_NAME, 
+            azureCredentialsId: env.AZURE_CRED_ID, 
             endpointVariable: '', 
-            helmChartLocation: 'charts/mywebapi', 
-            imageRepository: 'jiesheacr.azurecr.io/mywebapi', 
-            imageTag: 'latest', 
-            kubeconfigId: 'adskubeconfig', 
-            resourceGroupName: 'jiesheaks', 
-            secretName: 'registrysecret', 
-            secretNamespace: 'jieshe', 
-            sharedSpaceName: 'default', 
-            spaceName: 'jieshe',
-            dockerCredentials: [[credentialsId: 'acr', url: 'https://jiesheacr.azurecr.io']]
+            helmChartLocation: 'charts/$env.IMAGE_NAME', 
+            imageRepository: '$env.ACR_REGISTRY/$env.IMAGE_NAME', 
+            imageTag: env.BUILD_NUMBER, 
+            kubeconfigId: env.KUBE_CONFIG_ID, 
+            resourceGroupName: env.AKS_RES_GROUP, 
+            secretName: env.SECRET_NAME, 
+            secretNamespace: env.SECRET_NAMESPACE, 
+            sharedSpaceName: env.PARENT_DEV_SPACE, 
+            spaceName: env.DEV_SPACE,
+            dockerCredentials: [[credentialsId: env.ACR_CRED_ID, url: 'https://jiesheacr.azurecr.io']]
     }
 }
