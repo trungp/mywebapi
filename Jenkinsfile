@@ -24,6 +24,10 @@ node {
             secretNamespace: env.SECRET_NAMESPACE, 
             sharedSpaceName: env.PARENT_DEV_SPACE, 
             spaceName: env.DEV_SPACE,
-            dockerCredentials: [[credentialsId: env.ACR_CRED_ID, url: 'https://jiesheacr.azurecr.io']]
+            dockerCredentials: [[credentialsId: env.ACR_CRED_ID, url: env.ACR_URL]]
+    }
+
+    stage('test') {
+        sh "curl https://$env.azdsspace.$env.TEST_ENDPOINT"
     }
 }
