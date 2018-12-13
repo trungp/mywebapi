@@ -21,9 +21,9 @@ node {
             kubeconfigId: env.KUBE_CONFIG_ID, 
             resourceGroupName: env.AKS_RES_GROUP, 
             secretName: env.SECRET_NAME, 
-            secretNamespace: env.SECRET_NAMESPACE, 
+            secretNamespace: env.GITHUB_PR_SOURCE_BRANCH, 
             sharedSpaceName: env.PARENT_DEV_SPACE, 
-            spaceName: env.DEV_SPACE,
+            spaceName: env.GITHUB_PR_SOURCE_BRANCH,
             dockerCredentials: [[credentialsId: env.ACR_CRED_ID, url: env.ACR_URL]]
     }
 
