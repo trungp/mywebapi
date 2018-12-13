@@ -28,6 +28,6 @@ node {
     }
 
     stage('test') {
-        sh "curl http://$env.azdsspace.$env.TEST_ENDPOINT"
+        sh "echo http://$env.azdsspace.$env.TEST_ENDPOINT"
     }
 }
