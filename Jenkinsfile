@@ -48,10 +48,10 @@ node {
     }
 
     stage('cleanup') {
-        // devSpacesCleanup aksName: env.AKS_NAME, 
-        //     azureCredentialsId: env.AZURE_CRED_ID, 
-        //     devSpaceName: env.DEV_SPACE, 
-        //     kubeConfigId: env.KUBE_CONFIG_ID, 
-        //     resourceGroupName: env.AKS_RES_GROUP
+        devSpacesCleanup aksName: env.AKS_NAME, 
+            azureCredentialsId: env.AZURE_CRED_ID, 
+            devSpaceName: env.DEV_SPACE, 
+            kubeConfigId: env.KUBE_CONFIG_ID, 
+            resourceGroupName: env.AKS_RES_GROUP
     }
 }
