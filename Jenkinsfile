@@ -12,22 +12,49 @@ node {
     }
 
     stage('deploy') {
-        devSpaces aksName: env.AKS_NAME, 
-            azureCredentialsId: env.AZURE_CRED_ID, 
-            endpointVariable: '', 
-            helmChartLocation: "charts/$env.IMAGE_NAME", 
-            imageRepository: "$env.ACR_REGISTRY/$env.IMAGE_NAME", 
-            imageTag: env.BUILD_NUMBER, 
-            kubeconfigId: env.KUBE_CONFIG_ID, 
-            resourceGroupName: env.AKS_RES_GROUP, 
-            secretName: env.SECRET_NAME, 
-            secretNamespace: env.GITHUB_PR_SOURCE_BRANCH, 
-            sharedSpaceName: env.PARENT_DEV_SPACE, 
-            spaceName: env.GITHUB_PR_SOURCE_BRANCH,
-            dockerCredentials: [[credentialsId: env.ACR_CRED_ID, url: env.ACR_URL]]
+        devSpacesCreate aksName: 'demoaks', 
+            azureCredentialsId: 'jenkins-sp', 
+            kubeconfigId: 'adskubeconfig', 
+            resourceGroupName: 'demo-aks', 
+            sharedSpaceName: 'devspaces', 
+            spaceName: 'scott'
+
+
+        kubernetesDeploy deployTypeClass: [helmChartLocation: 'mywebapi', helmNamespace: 'scott', helmReleaseName: 'releasename'], 
+            kubeconfigId: 'adskubeconfig', 
+            secretName: ''
     }
+
+    stage('smoketest') {
+        // CI testing against http://$env.azdsprefix.$env.TEST_ENDPOINT" 
+    }
+      
+    stage('confirm merge') {
+        // This is just an example for how an email can be triggered… can be anything and up to customers to define.
+        // mail (to: 'to@example.com',
+        // subject: "Job ${env.JOB_NAME}' (${env.BUILD_NUMBER}) is waiting for input",
+        // body: "Please go to ${env.BUILD_URL}.")
+        // input 'Ready to go?'
+    }
+
+    stage('deploy') {
+        // Apply the deployment to shared namespace in AKS using acsDeploy, Helm or kubectl   
+    }
+      
+    stage('Verify') {
+        // verify the staging environment is working properly
+    }
+
 
     stage('test') {
         sh "echo http://$env.azdsspace.$env.TEST_ENDPOINT"
+    }
+
+    stage('cleanup') {
+        devSpacesCleanup aksName: 'demoaks', 
+            azureCredentialsId: 'jenkins-sp', 
+            devSpaceName: 'scott', 
+            kubeConfigId: 'adskubeconfig', 
+            resourceGroupName: 'demo-aks'
     }
 }
