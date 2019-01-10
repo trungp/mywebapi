@@ -4,29 +4,28 @@ node {
     }
 
     stage('build') {
-        // acrQuickTask azureCredentialsId: env.AZURE_CRED_ID, 
-        //     imageNames: [[image: "$env.ACR_REGISTRY/$env.IMAGE_NAME:$env.BUILD_NUMBER"]], 
-        //     registryName: env.ACR_NAME, 
-        //     resourceGroupName: env.ACR_RES_GROUP, 
-        //     dockerfile: 'Dockerfile.develop'
+        acrQuickTask azureCredentialsId: env.AZURE_CRED_ID, 
+            imageNames: [[image: "$env.ACR_REGISTRY/$env.IMAGE_NAME:$env.BUILD_NUMBER"]], 
+            registryName: env.ACR_NAME, 
+            resourceGroupName: env.ACR_RES_GROUP, 
+            dockerfile: 'Dockerfile.develop'
     }
 
     stage('deploy') {
-        devSpacesCreate aksName: $env.AKS_NAME, 
-            azureCredentialsId: $env.AZURE_CRED_ID, 
-            kubeconfigId: $env.KUBE_CONFIG_ID, 
-            resourceGroupName: $env.AKS_RES_GROUP, 
-            sharedSpaceName: $env.PARENT_DEV_SPACE, 
-            spaceName: $env.DEV_SPACE
+        devSpacesCreate aksName: env.AKS_NAME, 
+            azureCredentialsId: env.AZURE_CRED_ID, 
+            kubeconfigId: env.KUBE_CONFIG_ID, 
+            resourceGroupName: env.AKS_RES_GROUP, 
+            sharedSpaceName: env.PARENT_DEV_SPACE, 
+            spaceName: env.DEV_SPACE
 
 
         // kubernetesDeploy deployTypeClass: [helmChartLocation: 'charts/mywebapi', helmNamespace: 'scott', helmReleaseName: 'releasename'], 
         //     kubeconfigId: 'adskubeconfig', 
         //     secretName: ''
         kubernetesDeploy deployTypeClass: [configs: 'kubeconfigs/**'],
-            dockerCredentials: [[credentialsId: $env.ACR_CRED_ID, url: "http://$env.ACR_REGISTRY"]],
-            kubeconfigId: $env.KUBE_CONFIG_ID, 
-            secretName: ''
+            dockerCredentials: [[credentialsId: env.ACR_CRED_ID, url: "http://$env.ACR_REGISTRY"]],
+            kubeconfigId: env.KUBE_CONFIG_ID
     }
 
     stage('smoketest') {
