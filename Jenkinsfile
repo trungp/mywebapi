@@ -24,7 +24,7 @@ node {
         //     kubeconfigId: 'adskubeconfig', 
         //     secretName: ''
         kubernetesDeploy deployTypeClass: [configs: 'kubeconfigs/**'],
-            dockerCredentials: [[credentialsId: $env.ACR_CRED_ID, url: "http://$env.ACR_REGISTRY"]]
+            dockerCredentials: [[credentialsId: $env.ACR_CRED_ID, url: "http://$env.ACR_REGISTRY"]],
             kubeconfigId: $env.KUBE_CONFIG_ID, 
             secretName: ''
     }
