@@ -3,7 +3,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: mywebapi
-  namespace: scott
+  namespace: ${DEV_SPACE}
   labels:
     app: mywebapi
 spec:

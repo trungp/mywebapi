@@ -12,19 +12,20 @@ node {
     }
 
     stage('deploy') {
-        devSpacesCreate aksName: 'demoaks', 
-            azureCredentialsId: 'jenkins-sp', 
-            kubeconfigId: 'adskubeconfig', 
-            resourceGroupName: 'demo-aks', 
-            sharedSpaceName: 'devspaces', 
-            spaceName: 'scott'
+        devSpacesCreate aksName: $env.AKS_NAME, 
+            azureCredentialsId: $env.AZURE_CRED_ID, 
+            kubeconfigId: $env.KUBE_CONFIG_ID, 
+            resourceGroupName: $env.AKS_RES_GROUP, 
+            sharedSpaceName: $env.PARENT_DEV_SPACE, 
+            spaceName: $env.DEV_SPACE
 
 
         // kubernetesDeploy deployTypeClass: [helmChartLocation: 'charts/mywebapi', helmNamespace: 'scott', helmReleaseName: 'releasename'], 
         //     kubeconfigId: 'adskubeconfig', 
         //     secretName: ''
         kubernetesDeploy deployTypeClass: [configs: 'kubeconfigs/**'],
-            kubeconfigId: 'adskubeconfig', 
+            dockerCredentials: [[credentialsId: $env.ACR_CRED_ID, url: "http://$env.ACR_REGISTRY"]]
+            kubeconfigId: $env.KUBE_CONFIG_ID, 
             secretName: ''
     }
 
@@ -50,7 +51,7 @@ node {
 
 
     stage('test') {
-        sh "echo http://$env.azdsspace.$env.TEST_ENDPOINT"
+        sh "echo http://$env.azdsprefix.$env.TEST_ENDPOINT"
     }
 
     stage('cleanup') {

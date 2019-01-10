@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: mywebapi
-  namespace: scott
+  namespace: ${DEV_SPACE}
   labels:
     app: mywebapi
 spec:
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: mywebapi
-          image: jieshe/ads
+          image: "${ACR_REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}"
           # imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
