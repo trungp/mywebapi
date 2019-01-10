@@ -27,7 +27,7 @@ node {
 
     stage('smoketest') {
         // CI testing against http://$env.azdsprefix.$env.TEST_ENDPOINT" 
-        sh "sleep 10"
+        sh "sleep 30"
         sh "curl http://$env.azdsprefix.$env.TEST_ENDPOINT/greeting"
     }
       
