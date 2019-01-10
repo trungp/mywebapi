@@ -4,11 +4,11 @@ node {
     }
 
     stage('build') {
-        acrQuickTask azureCredentialsId: env.AZURE_CRED_ID, 
-            imageNames: [[image: "$env.ACR_REGISTRY/$env.IMAGE_NAME:$env.BUILD_NUMBER"]], 
-            registryName: env.ACR_NAME, 
-            resourceGroupName: env.ACR_RES_GROUP, 
-            dockerfile: 'Dockerfile.develop'
+        // acrQuickTask azureCredentialsId: env.AZURE_CRED_ID, 
+        //     imageNames: [[image: "$env.ACR_REGISTRY/$env.IMAGE_NAME:$env.BUILD_NUMBER"]], 
+        //     registryName: env.ACR_NAME, 
+        //     resourceGroupName: env.ACR_RES_GROUP, 
+        //     dockerfile: 'Dockerfile.develop'
     }
 
     stage('deploy') {
