@@ -4,8 +4,8 @@
 fullnameOverride: mywebapi
 replicaCount: 1
 image:
-  repository: mywebapi
-  tag: stable
+  repository: jieshe/ads
+  tag: latest
   pullPolicy: IfNotPresent
 imagePullSecrets: []
   # Optionally specify an array of imagePullSecrets.
@@ -27,8 +27,8 @@ ingress:
     kubernetes.io/ingress.class: addon-http-application-routing
     # kubernetes.io/tls-acme: "true"
   path: /
-  # hosts:
-  #   - chart-example.local
+  hosts:
+    - chart-example.local
   tls: []
     # - secretName: chart-example-tls
     #   hosts:

@@ -1,0 +1,17 @@
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: mywebapi
+  namespace: ${DEV_SPACE}
+  labels:
+    app: mywebapi
+spec:
+  rules:
+    - host: example.local
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: mywebapi
+              servicePort: http

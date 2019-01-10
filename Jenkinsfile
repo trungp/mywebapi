@@ -12,21 +12,23 @@ node {
     }
 
     stage('deploy') {
-        devSpacesCreate aksName: 'demoaks', 
-            azureCredentialsId: 'jenkins-sp', 
-            kubeconfigId: 'adskubeconfig', 
-            resourceGroupName: 'demo-aks', 
-            sharedSpaceName: 'devspaces', 
-            spaceName: 'scott'
+        devSpacesCreate aksName: env.AKS_NAME, 
+            azureCredentialsId: env.AZURE_CRED_ID, 
+            kubeconfigId: env.KUBE_CONFIG_ID, 
+            resourceGroupName: env.AKS_RES_GROUP, 
+            sharedSpaceName: env.PARENT_DEV_SPACE, 
+            spaceName: env.DEV_SPACE
 
-
-        kubernetesDeploy deployTypeClass: [helmChartLocation: 'mywebapi', helmNamespace: 'scott', helmReleaseName: 'releasename'], 
-            kubeconfigId: 'adskubeconfig', 
-            secretName: ''
+        kubernetesDeploy deployTypeClass: [configs: 'kubeconfigs/**'],
+            dockerCredentials: [[credentialsId: env.ACR_CRED_ID, url: "http://$env.ACR_REGISTRY"]],
+            kubeconfigId: env.KUBE_CONFIG_ID,
+            secretNamespace: env.DEV_SPACE
     }
 
     stage('smoketest') {
         // CI testing against http://$env.azdsprefix.$env.TEST_ENDPOINT" 
+        sh "sleep 30"
+        sh "curl http://$env.azdsprefix.$env.TEST_ENDPOINT/greeting"
     }
       
     stage('confirm merge') {
@@ -45,16 +47,11 @@ node {
         // verify the staging environment is working properly
     }
 
-
-    stage('test') {
-        sh "echo http://$env.azdsspace.$env.TEST_ENDPOINT"
-    }
-
     stage('cleanup') {
-        devSpacesCleanup aksName: 'demoaks', 
-            azureCredentialsId: 'jenkins-sp', 
-            devSpaceName: 'scott', 
-            kubeConfigId: 'adskubeconfig', 
-            resourceGroupName: 'demo-aks'
+        devSpacesCleanup aksName: env.AKS_NAME, 
+            azureCredentialsId: env.AZURE_CRED_ID, 
+            devSpaceName: env.DEV_SPACE, 
+            kubeConfigId: env.KUBE_CONFIG_ID, 
+            resourceGroupName: env.AKS_RES_GROUP
     }
 }

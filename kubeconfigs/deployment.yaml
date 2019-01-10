@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mywebapi
+  namespace: ${DEV_SPACE}
+  labels:
+    app: mywebapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mywebapi
+  template:
+    metadata:
+      labels:
+        app: mywebapi
+    spec:
+      containers:
+        - name: mywebapi
+          image: "${ACR_REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}"
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+      imagePullSecrets:
+        - name: $KUBERNETES_SECRET_NAME
