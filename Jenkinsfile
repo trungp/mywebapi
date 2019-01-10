@@ -25,7 +25,8 @@ node {
         //     secretName: ''
         kubernetesDeploy deployTypeClass: [configs: 'kubeconfigs/**'],
             dockerCredentials: [[credentialsId: env.ACR_CRED_ID, url: "http://$env.ACR_REGISTRY"]],
-            kubeconfigId: env.KUBE_CONFIG_ID
+            kubeconfigId: env.KUBE_CONFIG_ID,
+            secretNamespace: env.DEV_SPACE
     }
 
     stage('smoketest') {
