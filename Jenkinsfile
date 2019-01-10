@@ -54,10 +54,10 @@ node {
     }
 
     stage('cleanup') {
-        devSpacesCleanup aksName: 'demoaks', 
-            azureCredentialsId: 'jenkins-sp', 
-            devSpaceName: 'scott', 
-            kubeConfigId: 'adskubeconfig', 
-            resourceGroupName: 'demo-aks'
+        // devSpacesCleanup aksName: 'demoaks', 
+        //     azureCredentialsId: 'jenkins-sp', 
+        //     devSpaceName: 'scott', 
+        //     kubeConfigId: 'adskubeconfig', 
+        //     resourceGroupName: 'demo-aks'
     }
 }
