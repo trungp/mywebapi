@@ -20,7 +20,10 @@ node {
             spaceName: 'scott'
 
 
-        kubernetesDeploy deployTypeClass: [helmChartLocation: 'charts/mywebapi', helmNamespace: 'scott', helmReleaseName: 'releasename'], 
+        // kubernetesDeploy deployTypeClass: [helmChartLocation: 'charts/mywebapi', helmNamespace: 'scott', helmReleaseName: 'releasename'], 
+        //     kubeconfigId: 'adskubeconfig', 
+        //     secretName: ''
+        kubernetesDeploy deployTypeClass: [configs: 'kubeconfigs/**'],
             kubeconfigId: 'adskubeconfig', 
             secretName: ''
     }

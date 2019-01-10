@@ -1,0 +1,24 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: mywebapi
+  labels:
+    app: mywebapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mywebapi
+  template:
+    metadata:
+      labels:
+        app: mywebapi
+    spec:
+      containers:
+        - name: mywebapi
+          image: jieshe/ads
+          # imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP

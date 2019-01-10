@@ -1,0 +1,16 @@
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: mywebapi
+  labels:
+    app: mywebapi
+spec:
+  rules:
+    - host: example.local
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: mywebapi
+              servicePort: http
