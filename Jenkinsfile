@@ -17,12 +17,12 @@ node {
             kubeconfigId: env.KUBE_CONFIG_ID, 
             resourceGroupName: env.AKS_RES_GROUP, 
             sharedSpaceName: env.PARENT_DEV_SPACE, 
-            spaceName: env.DEV_SPACE
+            spaceName: env.GITHUB_PR_SOURCE_BRANCH
 
         kubernetesDeploy deployTypeClass: [configs: 'kubeconfigs/**'],
             dockerCredentials: [[credentialsId: env.ACR_CRED_ID, url: "http://$env.ACR_REGISTRY"]],
             kubeconfigId: env.KUBE_CONFIG_ID,
-            secretNamespace: env.DEV_SPACE
+            secretNamespace: env.GITHUB_PR_SOURCE_BRANCH
     }
 
     stage('smoketest') {
@@ -50,7 +50,7 @@ node {
     stage('cleanup') {
         devSpacesCleanup aksName: env.AKS_NAME, 
             azureCredentialsId: env.AZURE_CRED_ID, 
-            devSpaceName: env.DEV_SPACE, 
+            devSpaceName: env.GITHUB_PR_SOURCE_BRANCH, 
             kubeConfigId: env.KUBE_CONFIG_ID, 
             resourceGroupName: env.AKS_RES_GROUP
     }
