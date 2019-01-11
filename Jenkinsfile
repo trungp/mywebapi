@@ -1,5 +1,5 @@
 node {
-    // Variable to record user input
+    // Variable to record user's input
     def userInput
 
     stage('init') {
@@ -46,7 +46,7 @@ node {
         // Wait for users to decide whether continue the process
         try {
             userInput = input(
-                id: 'Proceed1', message: 'Was this successful?', parameters: [
+                id: 'Proceed1', message: 'Do you want to continue?', parameters: [
                 [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Please confirm you want to continue the process']
                 ])
         } catch(err) { // input false
