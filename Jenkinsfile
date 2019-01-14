@@ -20,14 +20,14 @@ node {
             kubeconfigId: env.KUBE_CONFIG_ID, 
             resourceGroupName: env.AKS_RES_GROUP, 
             sharedSpaceName: env.PARENT_DEV_SPACE, 
-            spaceName: env.GITHUB_PR_SOURCE_BRANCH
+            spaceName: env.DEV_SPACE
     }
 
     stage('deploy') {
         kubernetesDeploy deployTypeClass: [configs: 'kubeconfigs/**'],
             dockerCredentials: [[credentialsId: env.ACR_CRED_ID, url: "http://$env.ACR_REGISTRY"]],
             kubeconfigId: env.KUBE_CONFIG_ID,
-            secretNamespace: env.GITHUB_PR_SOURCE_BRANCH
+            secretNamespace: env.DEV_SPACE
     }
 
     stage('smoketest') {
