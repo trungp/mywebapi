@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: mywebapi
-  namespace: ${DEV_SPACE}
+  namespace: ${GITHUB_PR_SOURCE_BRANCH}
   labels:
     app: mywebapi
 spec:
