@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mywebapi
-  namespace: ${GITHUB_PR_SOURCE_BRANCH}
+  namespace: ${DEV_SPACE}
   labels:
     app: mywebapi
 spec:
