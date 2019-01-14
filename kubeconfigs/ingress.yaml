@@ -3,7 +3,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: mywebapi
-  namespace: ${GITHUB_PR_SOURCE_BRANCH}
+  namespace: ${DEV_SPACE}
   labels:
     app: mywebapi
 spec:
