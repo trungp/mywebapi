@@ -36,8 +36,8 @@ node {
         SITE_UP = false
         for (int i = 0; i < 10; i++) {
             sh "sleep ${SLEEP_TIME}"
-            code = sh(returnStdout: true, script: "curl -sL -w '%{http_code}' 'http://$env.azdsprefix.$env.TEST_ENDPOINT/greeting' -o /dev/null").trim()
-            if (code == 200) {
+            code = sh returnStdout: true, script: "curl -sL -w '%{http_code}' 'http://$env.azdsprefix.$env.TEST_ENDPOINT/greeting' -o /dev/null"
+            if (code == "200") {
                 sh "curl http://$env.azdsprefix.$env.TEST_ENDPOINT/greeting"
                 SITE_UP = true
                 break
