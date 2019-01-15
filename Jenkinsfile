@@ -32,8 +32,20 @@ node {
 
     stage('smoketest') {
         // CI testing against http://$env.azdsprefix.$env.TEST_ENDPOINT" 
-        sh "sleep 30"
-        sh "curl http://$env.azdsprefix.$env.TEST_ENDPOINT/greeting"
+        SLEEP_TIME = 30
+        SITE_UP = false
+        for (int i = 0; i < 10; i++) {
+            sh "sleep ${SLEEP_TIME}"
+            code = sh(returnStdout: true, script: "curl -sL -w '%{http_code}' 'http://$env.azdsprefix.$env.TEST_ENDPOINT/greeting' -o /dev/null").trim()
+            if (code == 200) {
+                sh "curl http://$env.azdsprefix.$env.TEST_ENDPOINT/greeting"
+                SITE_UP = true
+                break
+            }
+        }
+        if(!SITE_UP) {
+            echo "The site has not been up after five minutes"
+        }
     }
       
     stage('confirm merge') {
