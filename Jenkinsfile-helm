@@ -28,7 +28,7 @@ node('master') {
         def registrySecretName = "helm-secret-$env.BUILD_NUMBER"
         sh "kubectl create secret docker-registry ${registrySecretName} --docker-server=$env.ACR_REGISTRY --docker-username=$env.ACR_NAME --docker-password=$env.ACR_SECRET"
         sh "helm init --tiller-namespace azds"
-        sh "helm install ./charts/mywebapi --name mywebapi$env.BUILD_NUMBER --namespace ${devSpaceNamespace} --set image.repository=$env.ACR_REGISTRY/$env.IMAGE_NAME --set image.tag=$env.BUILD_NUMBER --set ingress.hosts={localhost}  --set imagePullSecrets[0].name=${registrySecretName} --tiller-namespace azds"
+        sh "helm upgrade ./charts/mywebapi --install --name mywebapi$env.BUILD_NUMBER --namespace ${devSpaceNamespace} --set image.repository=$env.ACR_REGISTRY/$env.IMAGE_NAME --set image.tag=$env.BUILD_NUMBER --set ingress.hosts={localhost}  --set imagePullSecrets[0].name=${registrySecretName} --tiller-namespace azds"
     }
 
     stage('smoketest') {
