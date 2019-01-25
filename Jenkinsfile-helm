@@ -1,6 +1,7 @@
-node {
+node('master') {
     // Variable to record user's input
     def userInput
+    def devSpaceNamespace = "$env.GITHUB_PR_SOURCE_BRANCH-helm"
 
     stage('init') {
         checkout scm
@@ -20,14 +21,14 @@ node {
             kubeconfigId: env.KUBE_CONFIG_ID, 
             resourceGroupName: env.AKS_RES_GROUP, 
             sharedSpaceName: env.PARENT_DEV_SPACE, 
-            spaceName: env.GITHUB_PR_SOURCE_BRANCH
+            spaceName: devSpaceNamespace
     }
 
     stage('deploy') {
         def registrySecretName = "helm-secret-$env.BUILD_NUMBER"
         sh "kubectl create secret docker-registry ${registrySecretName} --docker-server=$env.ACR_REGISTRY --docker-username=$env.ACR_NAME --docker-password=$env.ACR_SECRET"
         sh "helm init --tiller-namespace azds"
-        sh "helm install ./charts/mywebapi --name mywebapi$env.BUILD_NUMBER --namespace $env.GITHUB_PR_SOURCE_BRANCH --set image.repository=$env.ACR_REGISTRY/$env.IMAGE_NAME --set image.tag=$env.BUILD_NUMBER --set ingress.hosts={localhost}  --set imagePullSecrets[0].name=${registrySecretName} --tiller-namespace azds"
+        sh "helm install ./charts/mywebapi --name mywebapi$env.BUILD_NUMBER --namespace ${devSpaceNamespace} --set image.repository=$env.ACR_REGISTRY/$env.IMAGE_NAME --set image.tag=$env.BUILD_NUMBER --set ingress.hosts={localhost}  --set imagePullSecrets[0].name=${registrySecretName} --tiller-namespace azds"
     }
 
     stage('smoketest') {
@@ -82,7 +83,7 @@ node {
     stage('cleanup') {
         // devSpacesCleanup aksName: env.AKS_NAME, 
         //     azureCredentialsId: env.AZURE_CRED_ID, 
-        //     devSpaceName: env.GITHUB_PR_SOURCE_BRANCH, 
+        //     devSpaceName: devSpaceNamespace, 
         //     kubeConfigId: env.KUBE_CONFIG_ID, 
         //     resourceGroupName: env.AKS_RES_GROUP
     }
