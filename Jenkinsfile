@@ -1,6 +1,8 @@
-node {
+node('master') {
     // Variable to record user's input
     def userInput
+    def devSpaceNamespace = "$env.GITHUB_PR_SOURCE_BRANCH-helm"
+    def releaseName = "mywebapi${devSpaceNamespace}"
 
     stage('init') {
         checkout scm
@@ -20,14 +22,14 @@ node {
             kubeconfigId: env.KUBE_CONFIG_ID, 
             resourceGroupName: env.AKS_RES_GROUP, 
             sharedSpaceName: env.PARENT_DEV_SPACE, 
-            spaceName: env.GITHUB_PR_SOURCE_BRANCH
+            spaceName: devSpaceNamespace
     }
 
     stage('deploy') {
-        kubernetesDeploy deployTypeClass: [configs: 'kubeconfigs/**'], configs: 'kubeconfigs/**',
-            dockerCredentials: [[credentialsId: env.ACR_CRED_ID, url: "http://$env.ACR_REGISTRY"]],
-            kubeconfigId: env.KUBE_CONFIG_ID,
-            secretNamespace: env.GITHUB_PR_SOURCE_BRANCH
+        def registrySecretName = "helm-secret-$env.BUILD_NUMBER"
+        sh "kubectl create secret docker-registry ${registrySecretName} --docker-server=$env.ACR_REGISTRY --docker-username=$env.ACR_NAME --docker-password=$env.ACR_SECRET --namespace=${devSpaceNamespace}"
+        sh "helm init --tiller-namespace azds"
+        sh "helm upgrade ${releaseName} ./charts/mywebapi --install --force --namespace ${devSpaceNamespace} --set image.repository=$env.ACR_REGISTRY/$env.IMAGE_NAME --set image.tag=$env.BUILD_NUMBER --set ingress.hosts={localhost}  --set imagePullSecrets[0].name=${registrySecretName} --tiller-namespace azds"
     }
 
     stage('smoketest') {
@@ -36,7 +38,12 @@ node {
         SITE_UP = false
         for (int i = 0; i < 10; i++) {
             sh "sleep ${SLEEP_TIME}"
-            code = sh returnStdout: true, script: "curl -sL -w '%{http_code}' 'http://$env.azdsprefix.$env.TEST_ENDPOINT/greeting' -o /dev/null"
+            code = "0"
+            try {
+                code = sh returnStdout: true, script: "curl -sL -w '%{http_code}' 'http://$env.azdsprefix.$env.TEST_ENDPOINT/greeting' -o /dev/null"
+            } catch (Exception e){
+                // ignore
+            }
             if (code == "200") {
                 sh "curl http://$env.azdsprefix.$env.TEST_ENDPOINT/greeting"
                 SITE_UP = true
@@ -58,7 +65,7 @@ node {
         // Wait for users to decide whether continue the process
         try {
             userInput = input(
-                id: 'Proceed1', message: 'Do you want to continue?', parameters: [
+                id: 'Proceed1', message: 'Do you want to apply changes in shared namespace and delete private dev space?', parameters: [
                 [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Please confirm you want to continue the process']
                 ])
         } catch(err) { // input false
@@ -75,15 +82,17 @@ node {
             // verify the staging environment is working properly
         }
 
+        stage('cleanup') {
+            devSpacesCleanup aksName: env.AKS_NAME, 
+                azureCredentialsId: env.AZURE_CRED_ID, 
+                devSpaceName: devSpaceNamespace, 
+                kubeConfigId: env.KUBE_CONFIG_ID, 
+                resourceGroupName: env.AKS_RES_GROUP,
+                helmReleaseName: releaseName
+        }
+
     } else {
         // Send a notification
     } 
 
-    stage('cleanup') {
-        // devSpacesCleanup aksName: env.AKS_NAME, 
-        //     azureCredentialsId: env.AZURE_CRED_ID, 
-        //     devSpaceName: env.GITHUB_PR_SOURCE_BRANCH, 
-        //     kubeConfigId: env.KUBE_CONFIG_ID, 
-        //     resourceGroupName: env.AKS_RES_GROUP
-    }
 }
