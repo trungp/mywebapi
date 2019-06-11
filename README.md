@@ -112,7 +112,7 @@ Follow the steps in [here](https://docs.microsoft.com/en-us/azure/dev-spaces/get
 4. Choose "Pipeline script from SCM" in "Pipeline" -> "Definition".
 5. In "SCM", choose "Git" and enter your repo URL
 6. In Branch Specifier, enter "refs/remotes/origin/${GITHUB_PR_SOURCE_BRANCH}"
-7. Fill in the SCM repo url and script path "Jenkinsfile". (Script [Example](/JenkinsFile))
+7. Fill in the SCM repo url and script path "Jenkinsfile". (Script [Example](/Jenkinsfile))
 8. "Lightweight checkout" should be checked.
 
 ## <a name="create-PR"></a>Create PR to trigger CI
