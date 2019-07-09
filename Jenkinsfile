@@ -28,12 +28,13 @@ node('master') {
     stage('deploy') {
         kubernetesDeploy deployType: 'helm', 
             deployTypeClass: [helmCommandClass: [helmChartLocation: 'charts/mywebapi', helmChartType: 'uri', helmNamespace: "${devSpaceNamespace}", helmReleaseName: "${releaseName}", 
-                setValues: "image.repository=$env.ACR_REGISTRY/$env.IMAGE_NAME,image.tag=$env.BUILD_NUMBER,ingress.hosts[0]=localhost,imagePullSecrets[0].name=$env.KUBERNETES_SECRET_NAME"], 
+                setValues: "image.repository=$env.ACR_REGISTRY/$env.IMAGE_NAME,image.tag=$env.BUILD_NUMBER,ingress.hosts[0]=localhost,imagePullSecrets[0].name=$env.ACR_SECRET"], 
             dockerCredentials: [[credentialsId: env.ACR_CREDENTIAL_ID, url: "http://$env.ACR_REGISTRY"]], 
             helmCommandType: 'install', 
             helmWait: true, 
             tillerNamespace: 'azds'], 
-            kubeconfigId: 'adskubeconfig'
+            kubeconfigId: 'adskubeconfig',
+            secretName: env.ACR_SECRET
     }
 
     stage('smoketest') {
