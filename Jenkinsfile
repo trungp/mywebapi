@@ -34,7 +34,8 @@ node('master') {
             helmWait: true, 
             tillerNamespace: 'azds'], 
             kubeconfigId: 'adskubeconfig',
-            secretName: env.ACR_SECRET
+            secretName: env.ACR_SECRET,
+            secretNamespace: devSpaceNamespace
     }
 
     stage('smoketest') {
