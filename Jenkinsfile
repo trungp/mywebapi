@@ -28,7 +28,7 @@ node('master') {
     stage('deploy') {
         kubernetesDeploy deployType: 'helm', 
             deployTypeClass: [helmCommandClass: [helmChartLocation: 'charts/mywebapi', helmChartType: 'uri', helmNamespace: "${devSpaceNamespace}", helmReleaseName: "${releaseName}", 
-                setValues: "image.repository=$env.ACR_REGISTRY/$env.IMAGE_NAME,image.tag=$env.BUILD_NUMBER,ingress.hosts={localhost},imagePullSecrets[0].name=helm-secret-16"], 
+                setValues: "image.repository=$env.ACR_REGISTRY/$env.IMAGE_NAME,image.tag=$env.BUILD_NUMBER,ingress.hosts=[localhost],imagePullSecrets[0].name=helm-secret-16"], 
             helmCommandType: 'install', 
             helmWait: true, 
             tillerNamespace: 'azds'], 
