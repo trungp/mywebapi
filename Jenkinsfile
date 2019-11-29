@@ -5,6 +5,7 @@ node('master') {
     def releaseName = "mywebapi${devSpaceNamespace}"
 
     stage('init') {
+        cleanWs()
         checkout scm
     }
 
