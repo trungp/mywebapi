@@ -1,7 +1,7 @@
 node('master') {
     // Variable to record user's input
     def userInput
-    def devSpaceNamespace = "$env.GITHUB_PR_SOURCE_BRANCH-helm"
+    def devSpaceNamespace = "$env.namespace"
     def releaseName = "mywebapi${devSpaceNamespace}"
 
     stage('init') {
@@ -29,8 +29,8 @@ node('master') {
     stage('deploy') {
         def registrySecretName = "helm-secret-$env.BUILD_NUMBER"
         sh "/usr/local/bin/kubectl create secret docker-registry ${registrySecretName} --docker-server=$env.ACR_REGISTRY --docker-username=$env.ACR_NAME --docker-password=$env.ACR_SECRET --namespace=${devSpaceNamespace}"
-        sh "/usr/local/bin/helm init --tiller-namespace azds"
-        sh "/usr/local/bin/helm upgrade ${releaseName} ./charts/mywebapi --install --force --namespace ${devSpaceNamespace} --set image.repository=$env.ACR_REGISTRY/$env.IMAGE_NAME --set image.tag=$env.BUILD_NUMBER --set ingress.hosts={localhost}  --set imagePullSecrets[0].name=${registrySecretName} --tiller-namespace azds"
+        sh "/usr/local/bin/helm init --tiller-namespace dev"
+        sh "/usr/local/bin/helm upgrade ${releaseName} ./charts/mywebapi --install --force --namespace ${devSpaceNamespace} --set image.repository=$env.ACR_REGISTRY/$env.IMAGE_NAME --set image.tag=$env.BUILD_NUMBER --set ingress.hosts={localhost}  --set imagePullSecrets[0].name=${registrySecretName} --tiller-namespace dev"
     }
 
     stage('smoketest') {
