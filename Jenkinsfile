@@ -2,7 +2,7 @@ node('master') {
     // Variable to record user's input
     def userInput
     def devSpaceNamespace = "$env.namespace"
-    def releaseName = "mywebapi${devSpaceNamespace}"
+    def releaseName = "mywebapi"
 
     stage('init') {
         cleanWs()
